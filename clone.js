@@ -61,7 +61,7 @@ function clone(parent, circular, depth, prototype, includeNonEnumerable) {
   var allParents = [];
   var allChildren = [];
 
-  var useBuffer = typeof Buffer != 'undefined';
+  var GlobalBuffer = global['Buffer'];
 
   if (typeof circular == 'undefined')
     circular = true;
@@ -103,13 +103,13 @@ function clone(parent, circular, depth, prototype, includeNonEnumerable) {
       if (parent.lastIndex) child.lastIndex = parent.lastIndex;
     } else if (clone.__isDate(parent)) {
       child = new Date(parent.getTime());
-    } else if (useBuffer && Buffer.isBuffer(parent)) {
-      if (Buffer.from) {
+    } else if (GlobalBuffer && GlobalBuffer.isBuffer(parent)) {
+      if (GlobalBuffer.from) {
         // Node.js >= 5.10.0
-        child = Buffer.from(parent);
+        child = GlobalBuffer.from(parent);
       } else {
         // Older Node.js versions
-        child = new Buffer(parent.length);
+        child = new GlobalBuffer(parent.length);
         parent.copy(child);
       }
       return child;
